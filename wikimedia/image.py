@@ -1,13 +1,24 @@
 from requests import request
 from Resources.variables import ENDPOINT
+from title import fetch_title
 
-url = ENDPOINT + "?action=query&format=json&prop=imageinfo&iiprop=url&titles=File:Long-crested eagle (Lophaetus occipitalis) 3.jpg"
 
-payload = {}
-headers = {
-  'Cookie': 'WMF-Last-Access-Global=25-Nov-2023; WMF-Last-Access=25-Nov-2023; enwikiBlockID=14675105%21c32a1f79e2c70302b86474755e78359e47dec74eee8732be91eac3225a047ac43e4369487c6c8b10d8bdda45c8aaeb72bb61b8617327897e5d3af54b54c8e37f'
-}
+def fetch_image():
+    fetch_title_data = fetch_title("")
+    page_id = str(fetch_title_data["pageid"])
+    title = fetch_title_data["title"]
 
-response = request("GET", url, headers=headers, data=payload)
+    title = title.replace("&", "%26")
+    url = ENDPOINT + "?action=query&format=json&prop=imageinfo&iiprop=url&titles=" + title
+    response = request("GET", url, headers={}, data={})
+    response = response.json()
+    image_url = response["query"]["pages"][page_id]["imageinfo"][0]["url"]
+    return image_url
 
-print(response.text)
+
+if __name__ == "__main__":
+    # from datetime import date
+    # cur_date = date.today()
+    # date_iso = cur_date.isoformat()
+    x = fetch_image()
+    print(x)
