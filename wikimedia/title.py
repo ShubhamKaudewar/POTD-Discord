@@ -1,14 +1,11 @@
 from requests import request
-from Resources.variables import ENDPOINT
+from resources.variables import ENDPOINT
 
 
-def fetch_title(cur_date):
-    if cur_date == "":
-        from datetime import date
-        cur_date = date.today()
-        date_iso = cur_date.isoformat()
-    else:
-        date_iso = cur_date
+def fetch_title():
+    from datetime import date
+    cur_date = date.today()
+    date_iso = cur_date.isoformat()
     title = "Template:POTD protected/" + date_iso
     url = ENDPOINT + "?action=query&format=json&formatversion=2&prop=images&titles=" + title
 
