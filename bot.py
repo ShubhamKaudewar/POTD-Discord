@@ -1,11 +1,11 @@
 
-from resources.variables import TOKEN
+from os import environ
 from discord.ext import commands
 import discord
 import bot
 from datetime import datetime, time, timedelta
 import asyncio
-
+TOKEN = environ.get("BOT_TOKEN")
 client = discord.Client(intents=discord.Intents.default())
 
 @client.event
@@ -24,8 +24,10 @@ async def trigger(channel_id):
     from wikimedia.image import fetch_image
     image_data = fetch_image()
     image_url = image_data.get("image_url")
-    caption = image_data.get("caption")
-    description = "## Today's Picture of The Day from Wikipedia \n\n" + caption
+    image_page_id = image_data.get("image_page_id")
+    from wikimedia.caption import fetch_caption
+    caption = fetch_caption(image_page_id)
+    description = "**Wikimedia Commons:Picture of the day** \n\n## _*" + caption + "*_"
 
     channel = client.get_channel(channel_id)  # replace id
     from aiohttp import ClientSession
