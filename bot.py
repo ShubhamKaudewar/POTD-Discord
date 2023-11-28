@@ -1,9 +1,8 @@
 
-from resources.variables import TOKEN, CHANNELID
+from resources.variables import TOKEN
 from discord.ext import commands
 import discord
 import bot
-TOKEN = TOKEN
 from datetime import datetime, time, timedelta
 import asyncio
 
@@ -21,14 +20,14 @@ async def on_member_join(member):
     )
 
 @client.event
-async def trigger():
+async def trigger(channel_id):
     from wikimedia.image import fetch_image
     image_data = fetch_image()
     image_url = image_data.get("image_url")
     caption = image_data.get("caption")
     description = "## Today's Picture of The Day from Wikipedia \n\n" + caption
 
-    channel = client.get_channel(CHANNELID)  # replace id
+    channel = client.get_channel(channel_id)  # replace id
     from aiohttp import ClientSession
     async with ClientSession() as session:  # creates session
         async with session.get(image_url) as resp:  # gets image from url
@@ -44,7 +43,8 @@ async def on_message(message):
         return
 
     if message.content == '$potd':
-        await trigger()
+        channel_id = message.channel.id
+        await trigger(channel_id)
     elif message.content == 'raise-exception':
         raise discord.DiscordException
 
