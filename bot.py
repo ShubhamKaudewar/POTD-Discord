@@ -1,11 +1,13 @@
 
-from os import environ
+from os import getenv
 from discord.ext import commands
 import discord
+from dotenv import load_dotenv
+load_dotenv()
 import bot
 from datetime import datetime, time, timedelta
 import asyncio
-TOKEN = environ.get("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 client = discord.Client(intents=discord.Intents.default())
 
 @client.event
