@@ -6,7 +6,7 @@ def fetch_title():
     from datetime import date
     cur_date = date.today()
     date_iso = cur_date.isoformat()
-    title = "Template:POTD protected/" + date_iso
+    title = "Template:Potd/" + date_iso
     url = ENDPOINT + "?action=query&format=json&formatversion=2&prop=images&titles=" + title
 
     response = request("GET", url, headers={}, data={})

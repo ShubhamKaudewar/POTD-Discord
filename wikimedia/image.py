@@ -15,9 +15,11 @@ def fetch_image():
     response = request("GET", url, headers={}, data={})
     response = response.json()
     print(response["query"]["pages"])
-    image_url = list(response["query"]["pages"].values())[0]["imageinfo"][0]["url"]
+    image_page = list(response["query"]["pages"].values())[0]
+    image_url = image_page["imageinfo"][0]["url"]
+    image_page_id = image_page["pageid"]
     return_data = {
-        "caption": title,
+        "image_page_id": image_page_id,
         "image_url": image_url
     }
     return return_data
