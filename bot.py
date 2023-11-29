@@ -38,6 +38,7 @@ async def trigger(channel_id):
             img = await resp.read()  # reads image from response
             from io import BytesIO
             with BytesIO(img) as file:  # converts to file-like object
+                print(file.__sizeof__())
                 from discord import File
                 await channel.send(description, file=File(file, "t.png"))
 
