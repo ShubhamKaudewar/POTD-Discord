@@ -11,12 +11,13 @@ def fetch_image():
     print(title)
 
     title = title.replace("&", "%26")
-    url = ENDPOINT + "?action=query&format=json&prop=imageinfo&iiprop=url&titles=" + title
+    url = ENDPOINT + ("?action=query&format=json&prop=imageinfo&iiprop=url"
+                      "&iiurlwidth=1600&iiurlheight=600&titles=") + title
     response = request("GET", url, headers={}, data={})
     response = response.json()
     print(response["query"]["pages"])
     image_page = list(response["query"]["pages"].values())[0]
-    image_url = image_page["imageinfo"][0]["url"]
+    image_url = image_page["imageinfo"][0]["responsiveUrls"]["1.5"]
     image_page_id = image_page["pageid"]
     return_data = {
         "image_page_id": image_page_id,
