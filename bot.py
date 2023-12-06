@@ -22,14 +22,14 @@ async def on_member_join(member):
     )
 
 @client.event
-async def trigger(channel_id):
+async def trigger_potd(channel_id):
     from wikimedia.image import fetch_image
     image_data = fetch_image()
     image_url = image_data.get("image_url")
     image_page_id = image_data.get("image_page_id")
     from wikimedia.caption import fetch_caption
     caption = fetch_caption(image_page_id)
-    description = "**Wikimedia Commons:Picture of the day** \n\n## _*" + caption + "*_"
+    description = "**Wikimedia Commons: Picture of the day** \n\n## _*" + caption + "*_"
 
     channel = client.get_channel(channel_id)  # replace id
     from aiohttp import ClientSession
@@ -41,6 +41,29 @@ async def trigger(channel_id):
                 print(file.__sizeof__())
                 from discord import File
                 await channel.send(description, file=File(file, "t.png"))
+@client.event
+async def trigger_motd(channel_id):
+    from wikimedia.video import fetch_video
+    video_data = fetch_video()
+    video_url = video_data.get("video_url")
+    video_page_id = video_data.get("video_page_id")
+    from wikimedia.caption import fetch_caption
+    caption = fetch_caption(video_page_id)
+    description = "**Wikimedia Commons: Video of the day** \n\n## _*" + caption + "*_"
+
+    channel = client.get_channel(channel_id)
+    headers = {'User-Agent': 'My User Agent 1.0'}
+        # "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
+    import requests
+    try:
+        record = requests.get(video_url, headers=headers, allow_redirects=False, timeout=10)
+    except requests.exceptions.Timeout as err:
+        print(err)
+    from io import BytesIO
+    with BytesIO(record) as file:  # converts to file-like object
+        print(file.__sizeof__())
+        from discord import File
+        await channel.send(description, file=File(file, "t.mp4"))
 
 @client.event
 async def on_message(message):
@@ -49,7 +72,10 @@ async def on_message(message):
 
     if message.content == '$potd':
         channel_id = message.channel.id
-        await trigger(channel_id)
+        await trigger_potd(channel_id)
+    if message.content == '$motd':
+        channel_id = message.channel.id
+        await trigger_motd(channel_id)
     elif message.content == 'raise-exception':
         raise discord.DiscordException
 

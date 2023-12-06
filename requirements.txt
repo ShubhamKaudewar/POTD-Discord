@@ -4,3 +4,4 @@ aiohttp
 aiosignal
 async_timeout
 python-dotenv
+wikitextparser

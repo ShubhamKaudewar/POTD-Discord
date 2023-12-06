@@ -1,27 +1,27 @@
 from requests import request
 from resources.variables import ENDPOINT
-from wikimedia.title import fetch_potd_title
+from wikimedia.title import fetch_motd_title
 
 
-def fetch_image():
-    fetch_title_data = fetch_potd_title()
+def fetch_video():
+    fetch_title_data = fetch_motd_title()
     page_id = str(fetch_title_data["pageid"])
     print(page_id)
     title = fetch_title_data["title"]
     print(title)
 
     title = title.replace("&", "%26").replace(" ", "%20")
-    url = ENDPOINT + ("?action=query&format=json&prop=imageinfo&iiprop=url"
-                      "&iiurlwidth=1600&iiurlheight=600&titles=") + title
+    url = ENDPOINT + ("?action=query&format=json&prop=videoinfo"
+                      "&viprop=derivatives&formatversion=2&titles=File:") + title
     response = request("GET", url, headers={}, data={})
     response = response.json()
     print(response["query"]["pages"])
-    image_page = list(response["query"]["pages"].values())[0]
-    image_url = image_page["imageinfo"][0]["responsiveUrls"]["1.5"]
-    image_page_id = image_page["pageid"]
+    video_page = response["query"]["pages"][0]
+    video_url = video_page["videoinfo"][0]["derivatives"][0]["src"]
+    video_page_id = video_page["pageid"]
     return_data = {
-        "image_page_id": image_page_id,
-        "image_url": image_url
+        "video_page_id": video_page_id,
+        "video_url": video_url
     }
     return return_data
 
