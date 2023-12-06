@@ -29,7 +29,7 @@ async def trigger(channel_id):
     image_page_id = image_data.get("image_page_id")
     from wikimedia.caption import fetch_caption
     caption = fetch_caption(image_page_id)
-    description = "**Wikimedia Commons:Picture of the day** \n\n## _*" + caption + "*_"
+    description = "**Wikimedia Commons: Picture of the day** \n\n## _*" + caption + "*_"
 
     channel = client.get_channel(channel_id)  # replace id
     from aiohttp import ClientSession
@@ -43,6 +43,24 @@ async def trigger(channel_id):
                 await channel.send(description, file=File(file, "t.png"))
 
 @client.event
+async def trigger_wotd(channel_id):
+    from wordnik.word import WordNik
+
+    channel = client.get_channel(channel_id)  # replace id
+    from aiohttp import ClientSession
+    async with ClientSession() as session:  # creates session
+
+        from datetime import date, datetime
+        cur_date = date.today()
+        date_iso = cur_date.isoformat()
+        word_text = WordNik().get_WOTD(date_iso)
+
+        x_date = datetime.now()
+        today = x_date.strftime("%A,%d %B, %Y")
+        caption = f'WordNik API Present: Word of the day [{today}]\n{word_text}'
+        await channel.send(caption)
+
+@client.event
 async def on_message(message):
     if message.author == client.user:
         return
@@ -50,8 +68,12 @@ async def on_message(message):
     if message.content == '$potd':
         channel_id = message.channel.id
         await trigger(channel_id)
+    elif message.content == '$wotd':
+        channel_id = message.channel.id
+        await trigger_wotd(channel_id)
     elif message.content == 'raise-exception':
         raise discord.DiscordException
+
 
 client.run(TOKEN)
 
