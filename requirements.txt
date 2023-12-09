@@ -1,6 +1,4 @@
 requests
-discord.py==1.7.2
+discord.py
 aiohttp
-aiosignal
-async_timeout
 python-dotenv
