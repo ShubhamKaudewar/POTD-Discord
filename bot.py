@@ -46,7 +46,7 @@ async def trigger_potd():
 @tasks.loop(time=trigger_time)
 async def trigger_wotd():
     from wordnik.word import WordNik
-    channel = client.get_channel((int(getenv("WOTD_CHANNEL"))))
+    channel = client.get_channel(int(getenv("WOTD_CHANNEL")))
     from datetime import date, datetime
     cur_date = date.today()
     date_iso = cur_date.isoformat()
@@ -66,11 +66,13 @@ client.run(getenv("BOT_TOKEN"))
 #
 #     if message.content == '$potd':
 #         channel_id = message.channel.id
-#         await trigger(channel_id)
+#         await trigger_potd(channel_id)
 #     elif message.content == '$wotd':
 #         channel_id = message.channel.id
 #         await trigger_wotd(channel_id)
 #     elif message.content == 'raise-exception':
-#         raise discord.DiscordException
+#         from discord import DiscordException
+#         raise DiscordException
+
 
 
