@@ -8,5 +8,9 @@ def fetch_caption(pageid):
 
     response = request("GET", url, headers={}, data={})
     data = response.json()
-    caption = data["entities"][ids]["labels"]["en"]["value"]
+    labels = data["entities"][ids]["labels"]
+    if labels == {}:
+        caption = data["entities"][ids]["title"]
+    else:
+        caption = data["entities"][ids]["labels"]["en"]["value"]
     return caption
