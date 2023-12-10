@@ -13,8 +13,12 @@ class WordNik:
         for i in d["definitions"]:
             text += f'_**{i["partOfSpeech"]}:**_ {i["text"]}\n'
         text += f'\n## Examples\n'
+        exmaples_count = 0
         for i in d["examples"]:
-            text += i["text"] + "\n_**Source:**_" + f' [{i["title"]}]({i["url"]})\n\n'
+            if exmaples_count == 3:
+                break
+            text += i["text"] + "\n_**Source:**_" + f' [{i["title"]}]({i.get("url", "")})\n\n'
+            exmaples_count += 1
         text += f'## Note\n{d["note"]}'
         print(text)
         return text
