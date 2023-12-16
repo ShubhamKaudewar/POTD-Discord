@@ -18,6 +18,7 @@ async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
     trigger_wotd.start()
     trigger_potd.start()
+    trigger_qotd.start()
 
 
 from discord.ext import tasks
@@ -56,6 +57,14 @@ async def trigger_wotd():
     today = x_date.strftime("%A,%d %B, %Y")
     caption = f'WordNik API Present: Word of the day [{today}]\n{word_text}'
     await channel.send(caption)
+
+@tasks.loop(time=trigger_time)
+async def trigger_qotd():
+    from wikiquote import qotd
+    channel = client.get_channel(int(getenv("QOTD_CHANNEL")))
+    quote, author = qotd()
+    quote_text = f'```asciidoc\n.Quote of the Day\n“{quote}”\n\n.Author\n{author}\n```'
+    await channel.send(quote_text)
 
 client.run(getenv("BOT_TOKEN"))
 

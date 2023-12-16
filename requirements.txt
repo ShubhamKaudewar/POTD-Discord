@@ -2,3 +2,4 @@ requests
 discord.py
 aiohttp
 python-dotenv
+wikiquote
